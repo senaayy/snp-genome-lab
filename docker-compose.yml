@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  jupyter:
+    build: .
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/home/jovyan/work
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    # Şifre sormadan doğrudan açılması için token'ı boş bırakıyoruz
+    command: start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''

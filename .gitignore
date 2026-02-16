@@ -1,0 +1,17 @@
+# Jupyter Notebook artıkları
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# Python çıktıları
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Veri ve Raporlar (Eğer çok büyükse veriyi yollamayabilirsin)
+# Ancak bu küçük bir proje olduğu için csv'yi yollaman iyi olur.
+# Yine de geçici dosyaları engelleyelim:
+.DS_Store
+.env
+
+# Docker
+.docker
