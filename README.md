@@ -75,3 +75,16 @@ Analiz sonuçlarımızı akademik literatürle karşılaştırdığımızda, mod
 - **BDNF (rs6265):** Nöroplastisite ile ilişkili olan bu varyantın modelimizdeki etkisi, literatürdeki bilişsel fonksiyon verileriyle uyumludur.
 
 ![Gelişmiş Manhattan Plot](reports/annotated_manhattan.png)
+
+---
+
+## 📩 İletişim
+
+Bu proje hakkında sorularınız, önerileriniz veya iş birliği talepleriniz için bana aşağıdaki kanallardan ulaşabilirsiniz:
+
+- **E-posta:** [240541111@firat.edu.tr](mailto:240541111@firat.edu.tr)
+- **Kurum:** Fırat Üniversitesi Teknoloji Fakültesi
+- **GitHub:** [senaayy](https://github.com/senaayy)
+
+---
+*Bu çalışma, genetik veri analizi ve makine öğrenmesi prensiplerini birleştiren bir mühendislik projesidir.*
