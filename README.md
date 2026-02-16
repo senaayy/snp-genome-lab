@@ -57,7 +57,8 @@ Analize Başlayın:
 Tarayıcınızda http://localhost:8888 adresine gidin ve notebooks/ klasöründeki analizleri çalıştırın.
   ```
 📁 Proje Yapısı
-  ```snp-genome-lab/
+ ```
+ snp-genome-lab/
 ├── data/               # Ham ve işlenmiş CSV verileri
 ├── notebooks/          # Jupyter analiz dosyaları
 ├── reports/            # Grafik ve analiz çıktıları (PNG)
