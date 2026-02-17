@@ -9,31 +9,31 @@ Bu proje, **Tek Nükleotid Polimorfizmleri (SNP)** verilerini analiz etmek, **N�
 
 ## 🚀 Proje Hakkında
 
-Bu çalışma, genetik varyasyonların (Genotip) hastalıklar ve beyin yapısı (Fenotip) üzerindeki etkisini kantitatif olarak ölçmeyi amaçlar. **Imaging Genetics** yaklaşımıyla genetik veri ve tıbbi görüntüleme verisi birleştirilerek teşhis doğruluğu (Accuracy) **%96** seviyesine çıkarılmıştır.
+Bu çalışma, genetik varyasyonların (Genotip) hastalıklar ve beyin yapısı (Fenotip) üzerindeki etkisini kantitatif olarak ölçmeyi amaçlar. Proje, sentetik verilerle başlayıp, **Ensembl** ve **OASIS** gibi gerçek dünya veri tabanlarından beslenen **"In Silico"** bir klinik deneye dönüşmüştür.
 
 ### Ana Özellikler:
-- **Veri Simülasyonu:** Biyolojik gerçekliğe uygun (HWE uyumlu) sentetik genetik veri üretimi.
-- **İlişki Testleri:** SNP ve hastalık arasındaki bağın Kay-Kare (Chi-Square) testi ile doğrulanması.
-- **Imaging Genetics:** Genetik varyasyonların beyin hacmi (Hipokampus) üzerindeki fiziksel etkisinin analizi.
-- **Multimodal AI:** Genetik + MRI verisini birlikte işleyen Random Forest modeli ile yüksek doğruluklu tahmin.
+- **Hibrid Veri Mimarisi:** Sentetik veri simülasyonu ve API tabanlı (Ensembl) gerçek popülasyon verisi entegrasyonu.
+- **İstatistiksel Genetik:** SNP ve hastalık arasındaki bağın GWAS (Genome-Wide Association Study) yöntemleriyle analizi.
+- **Imaging Genetics:** Genetik varyasyonların beyin hacmi (Hipokampus/nWBV) üzerindeki fiziksel etkisinin analizi.
+- **Multimodal AI:** Genetik + MRI verisini birlikte işleyen, dengesiz veri setlerinde bile yüksek başarı gösteren Random Forest modelleri.
 
 ---
 
 ## 📊 Analiz Bulguları
 
-### 1. GWAS ve Genetik Risk Haritası
+### 1. Genetik Risk Haritası (GWAS)
 Analizlerimizde `rs429358` (APOE geni) varyantının hastalıkla en güçlü ilişkiyi gösterdiği ($P < 10^{-20}$) tespit edilmiştir. Bu varyant, Alzheimer riski için en önemli genetik belirteçtir.
 
 ![Manhattan Plot](reports/manhattan_plot.png)
 
 ### 2. Imaging Genetics: Genotip-Fenotip İlişkisi
-Nörogörüntüleme verileri entegre edildiğinde, riskli varyantı taşıyan bireylerin **Hipokampus hacminde** belirgin bir düşüş (atrofi) gözlemlenmiştir. Aşağıdaki keman grafiği (violin plot), genetik riskin fiziksel yansımasını kanıtlamaktadır.
+Nörogörüntüleme verileri entegre edildiğinde, riskli varyantı taşıyan bireylerin **Hipokampus hacminde** belirgin bir düşüş (atrofi) gözlemlenmiştir. Aşağıdaki grafik, genetik riskin fiziksel yansımasını kanıtlamaktadır.
 
 ![Imaging Genetics Plot](reports/imaging_genetics_plot.png)
 
 ---
 
-## 🧠 Multimodal Yapay Zeka Performansı
+## 🧠 Multimodal Yapay Zeka Performansı (Phase 2)
 
 Sadece genetik veriye dayalı modeller ile genetik ve nörogörüntüleme verisini birleştiren **Multimodal** modellerin performansı karşılaştırılmıştır.
 
@@ -42,29 +42,39 @@ Sadece genetik veriye dayalı modeller ile genetik ve nörogörüntüleme verisi
 | **Temel Model** | Sadece Genetik (SNP) | ~%78.00 | %80.00 |
 | **Multimodal Model** | **Genetik + MRI** | **%96.67** | **%100.00** |
 
-**Sonuç:** Fiziksel kanıtların (MRI) modele eklenmesi, yanlış alarmları (False Positive) tamamen ortadan kaldırmış ve tahmin başarısını dramatik şekilde artırmıştır.
+**Sonuç:** Fiziksel kanıtların (MRI) modele eklenmesi, yanlış alarmları (False Positive) tamamen ortadan kaldırmıştır.
 
 ![Model Comparison](reports/model_comparison_plot.png)
 
 ---
 
-## 🌐 Gerçek Dünya Verileriyle Doğrulama
+## 🌍 Phase 3: Gerçek Dünya Validasyonu (Real-World Evidence)
 
-Analiz sonuçlarımız akademik literatürle tam uyumludur:
-- **APOE (rs429358):** Analizimizde en yüksek riski taşıyan bu varyant, literatürde Alzheimer hastalığının en güçlü genetik belirleyicisidir.
-- **Hipokampal Atrofi:** Simülasyonumuzda riskli grupta görülen hacim kaybı, klinik Alzheimer tablolarıyla örtüşmektedir.
+Projenin son aşamasında, modelin dayanıklılığı **gerçek dünya popülasyon istatistikleri** ile test edilmiştir:
 
-![Gelişmiş Manhattan Plot](reports/annotated_manhattan.png)
+1.  **Genetik:** Ensembl API ile Avrupa popülasyonundaki gerçek `rs429358` frekansları (%17.68) çekilmiştir.
+2.  **Klinik:** OASIS veritabanındaki gerçek Alzheimer hastalarının beyin hacmi istatistikleri kullanılmıştır.
+
+### Validasyon Sonuçları
+Dengesiz veri setine (Az sayıda hasta, çok sayıda sağlıklı birey) rağmen modelimiz **%100 Recall (Duyarlılık)** oranına ulaşarak **hiçbir hastayı gözden kaçırmamıştır.**
+
+| Metrik | Değer | Anlamı |
+| :--- | :--- | :--- |
+| **Accuracy** | **%93.00** | Gerçekçi, dengesiz senaryoda yüksek genel başarı. |
+| **Recall (Hasta)** | **1.00** | **Kritik Başarı:** Test edilen tüm hastalar doğru tespit edildi. |
+| **False Negative** | **0** | Model hiçbir hastaya yanlışlıkla "Sağlıklı" demedi. |
+
+![Real World Validation](reports/real_world_validation.png)
 
 ---
 
 ## 🛠️ Teknik Yığın
 
 - **Altyapı:** Docker, Jupyter Lab
-- **Programlama:** Python 3.11
+- **Biyolojik API:** Ensembl REST API, OASIS Datasets
 - **Veri Analizi:** Pandas, NumPy, Scipy.stats
 - **Görselleştirme:** Matplotlib, Seaborn
-- **Makine Öğrenmesi:** Scikit-learn (Random Forest, Multimodal Learning)
+- **Makine Öğrenmesi:** Scikit-learn (Random Forest, Multimodal Learning, Class Weight Balancing)
 
 ---
 
@@ -76,7 +86,7 @@ Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin:
    ```bash
    git clone [https://github.com/senaayy/snp-genome-lab.git](https://github.com/senaayy/snp-genome-lab.git)
    cd snp-genome-lab
-   ```
+    ```
 Docker Konteynerini Başlatın:
 
 ```bash
