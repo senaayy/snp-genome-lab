@@ -95,16 +95,6 @@ Tarayıcınızda http://localhost:8888 adresine gidin ve notebooks/ klasöründe
 └── requirements.txt    # Bağımlılıklar
 Not: Bu proje eğitim amaçlı geliştirilmiş bir biyoinformatik modellemesidir.
   ```
-## 🌐 Gerçek Dünya Verileriyle Doğrulama
-
-Analiz sonuçlarımızı akademik literatürle karşılaştırdığımızda, modelimizin ürettiği risk skorlarının biyolojik gerçeklerle örtüştüğü görülmüştür:
-
-- **APOE (rs429358):** Analizimizde en yüksek anlamlılığı gösteren varyant, gerçekte geç yaşta görülen Alzheimer hastalığının en önemli genetik belirleyicisidir.
-- **BDNF (rs6265):** Nöroplastisite ile ilişkili olan bu varyantın modelimizdeki etkisi, literatürdeki bilişsel fonksiyon verileriyle uyumludur.
-
-![Gelişmiş Manhattan Plot](reports/annotated_manhattan.png)
-
----
 
 ## 📩 İletişim
 
