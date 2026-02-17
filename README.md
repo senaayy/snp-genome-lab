@@ -1,18 +1,19 @@
 # 🧬 SNP-Genome-Lab: Genetik Risk Analizi ve Multimodal Yapay Zeka
 
 ![Biyoinformatik](https://img.shields.io/badge/Alan-Biyoinformatik-blueviolet)
-![Python](https://img.shields.io/badge/Dil-Python%203.10+-blue)
+![Python](https://img.shields.io/badge/Dil-Python%203.11+-blue)
 ![Docker](https://img.shields.io/badge/Platform-Docker-blue)
 ![License](https://img.shields.io/badge/Lisans-MIT-green)
 
-Bu proje, **Tek Nükleotid Polimorfizmleri (SNP)** verilerini analiz etmek, **Nörogörüntüleme (MRI)** verileriyle entegre etmek ve hastalık riski tahmini için **Multimodal Yapay Zeka** modelleri geliştirmek amacıyla uçtan uca bir biyoinformatik boru hattı sunar.
+Bu proje, **Tek Nükleotid Polimorfizmleri (SNP)** verilerini analiz etmek, **Nörogörüntüleme (MRI)** biyomarkerlarıyla entegre etmek ve hastalık riski tahmini için **Multimodal Yapay Zeka** modelleri geliştirmek amacıyla uçtan uca bir biyoinformatik boru hattı (pipeline) sunar.
 
 ## 🚀 Proje Hakkında
-Bu çalışma, genetik varyasyonların (Genotip) hastalıklar ve beyin yapısı (Fenotip) üzerindeki etkisini kantitatif olarak ölçmeyi amaçlar. **Imaging Genetics** yaklaşımıyla genetik veri ve tıbbi görüntüleme verisi birleştirilerek teşhis doğruluğu artırılmıştır.
+
+Bu çalışma, genetik varyasyonların (Genotip) hastalıklar ve beyin yapısı (Fenotip) üzerindeki etkisini kantitatif olarak ölçmeyi amaçlar. **Imaging Genetics** yaklaşımıyla genetik veri ve tıbbi görüntüleme verisi birleştirilerek teşhis doğruluğu (Accuracy) **%96** seviyesine çıkarılmıştır.
 
 ### Ana Özellikler:
-- **Veri Simülasyonu:** Biyolojik gerçekliğe uygun sentetik genetik veri ve MRI biyomarker üretimi.
-- **İlişki Testleri:** SNP ve fenotip arasındaki bağın Kay-Kare (Chi-Square) testi ile doğrulanması.
+- **Veri Simülasyonu:** Biyolojik gerçekliğe uygun (HWE uyumlu) sentetik genetik veri üretimi.
+- **İlişki Testleri:** SNP ve hastalık arasındaki bağın Kay-Kare (Chi-Square) testi ile doğrulanması.
 - **Imaging Genetics:** Genetik varyasyonların beyin hacmi (Hipokampus) üzerindeki fiziksel etkisinin analizi.
 - **Multimodal AI:** Genetik + MRI verisini birlikte işleyen Random Forest modeli ile yüksek doğruluklu tahmin.
 
@@ -20,8 +21,8 @@ Bu çalışma, genetik varyasyonların (Genotip) hastalıklar ve beyin yapısı 
 
 ## 📊 Analiz Bulguları
 
-### 1. GWAS ve Manhattan Plot
-Analizlerimizde `rs429358` (APOE geni) varyantının hastalıkla en güçlü ilişkiyi gösterdiği ($P < 10^{-20}$) tespit edilmiştir.
+### 1. GWAS ve Genetik Risk Haritası
+Analizlerimizde `rs429358` (APOE geni) varyantının hastalıkla en güçlü ilişkiyi gösterdiği ($P < 10^{-20}$) tespit edilmiştir. Bu varyant, Alzheimer riski için en önemli genetik belirteçtir.
 
 ![Manhattan Plot](reports/manhattan_plot.png)
 
@@ -32,7 +33,7 @@ Nörogörüntüleme verileri entegre edildiğinde, riskli varyantı taşıyan bi
 
 ---
 
-## 🧠 Multimodal Yapay Zeka Sonuçları
+## 🧠 Multimodal Yapay Zeka Performansı
 
 Sadece genetik veriye dayalı modeller ile genetik ve nörogörüntüleme verisini birleştiren **Multimodal** modellerin performansı karşılaştırılmıştır.
 
@@ -58,8 +59,10 @@ Analiz sonuçlarımız akademik literatürle tam uyumludur:
 ---
 
 ## 🛠️ Teknik Yığın
+
 - **Altyapı:** Docker, Jupyter Lab
-- **Analiz:** Pandas, NumPy, Scipy.stats
+- **Programlama:** Python 3.11
+- **Veri Analizi:** Pandas, NumPy, Scipy.stats
 - **Görselleştirme:** Matplotlib, Seaborn
 - **Makine Öğrenmesi:** Scikit-learn (Random Forest, Multimodal Learning)
 
