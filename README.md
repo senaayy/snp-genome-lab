@@ -7,8 +7,7 @@
 
 Bu proje, **Tek Nükleotid Polimorfizmleri (SNP)** verilerini analiz etmek, **Nörogörüntüleme (MRI)** biyomarkerlarıyla entegre etmek ve hastalık riski tahmini için **Multimodal Yapay Zeka** modelleri geliştirmek amacıyla uçtan uca bir biyoinformatik boru hattı (pipeline) sunar.
 
-## 🚀 Proje Hakkında
-
+## 🚀 Proje Vizyonu
 Bu çalışma, genetik varyasyonların (Genotip) hastalıklar ve beyin yapısı (Fenotip) üzerindeki etkisini kantitatif olarak ölçmeyi amaçlar. Proje, sentetik verilerle başlayıp, **Ensembl** ve **OASIS** gibi gerçek dünya veri tabanlarından beslenen **"In Silico"** bir klinik deneye dönüşmüştür.
 
 ### Ana Özellikler:
@@ -19,21 +18,35 @@ Bu çalışma, genetik varyasyonların (Genotip) hastalıklar ve beyin yapısı 
 
 ---
 
-## 📊 Analiz Bulguları
+## 🔬 Faz 1: Genetik Risk Analizi (GWAS)
 
-### 1. Genetik Risk Haritası (GWAS)
 Analizlerimizde `rs429358` (APOE geni) varyantının hastalıkla en güçlü ilişkiyi gösterdiği ($P < 10^{-20}$) tespit edilmiştir. Bu varyant, Alzheimer riski için en önemli genetik belirteçtir.
 
 ![Manhattan Plot](reports/manhattan_plot.png)
 
-### 2. Imaging Genetics: Genotip-Fenotip İlişkisi
-Nörogörüntüleme verileri entegre edildiğinde, riskli varyantı taşıyan bireylerin **Hipokampus hacminde** belirgin bir düşüş (atrofi) gözlemlenmiştir. Aşağıdaki grafik, genetik riskin fiziksel yansımasını kanıtlamaktadır.
+### 🧬 Biyolojik Doğrulama (Gerçek Dünya Eşleşmesi)
+Analiz sonuçlarımız, **NCBI** ve **GWAS Catalog** verileriyle karşılaştırılmış ve tespit edilen risk faktörlerinin biyolojik gerçekliği kanıtlanmıştır.
+
+- **APOE (rs429358):** Alzheimer hastalığının birincil genetik riski.
+- **BDNF (rs6265):** Nöroplastisite ve bilişsel fonksiyonlarla ilişkili gen.
+
+*Aşağıdaki grafikte, istatistiksel olarak anlamlı çıkan noktaların gerçek gen isimleriyle eşleştiği görülmektedir:*
+
+![Annotated Manhattan Plot](reports/annotated_manhattan.png)
+
+---
+
+## 🧠 Faz 2: Imaging Genetics (Genotip-Fenotip İlişkisi)
+
+Bu aşamada, genetik veriler **Nörogörüntüleme (MRI)** verileriyle birleştirilmiştir. Riskli varyantı (`rs429358`) taşıyan bireylerin **Hipokampus hacminde** belirgin bir düşüş (atrofi) gözlemlenmiştir.
+
+> **Bulgu:** Riskli genotipi taşıyan (Sağ taraf) bireylerin beyin hacmi dağılımı, sağlıklı bireylere (Sol taraf) göre anlamlı derecede düşüktür.
 
 ![Imaging Genetics Plot](reports/imaging_genetics_plot.png)
 
 ---
 
-## 🧠 Multimodal Yapay Zeka Performansı (Phase 2)
+## 🤖 Faz 3: Multimodal Yapay Zeka Performansı
 
 Sadece genetik veriye dayalı modeller ile genetik ve nörogörüntüleme verisini birleştiren **Multimodal** modellerin performansı karşılaştırılmıştır.
 
@@ -48,9 +61,9 @@ Sadece genetik veriye dayalı modeller ile genetik ve nörogörüntüleme verisi
 
 ---
 
-## 🌍 Phase 3: Gerçek Dünya Validasyonu (Real-World Evidence)
+## 🌍 Faz 4: Gerçek Dünya Validasyonu (Real-World Evidence)
 
-Projenin son aşamasında, modelin dayanıklılığı **gerçek dünya popülasyon istatistikleri** ile test edilmiştir:
+Projenin final aşamasında, modelin dayanıklılığı **gerçek dünya popülasyon istatistikleri** ile test edilmiştir:
 
 1.  **Genetik:** Ensembl API ile Avrupa popülasyonundaki gerçek `rs429358` frekansları (%17.68) çekilmiştir.
 2.  **Klinik:** OASIS veritabanındaki gerçek Alzheimer hastalarının beyin hacmi istatistikleri kullanılmıştır.
