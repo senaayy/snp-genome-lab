@@ -37,6 +37,7 @@ Bu çalışma, genetik varyasyonların (Genotip) hastalıklar ve beyin yapısı 
 | 6 | Threshold Optimizasyonu | 🧠 Ham OASIS Görüntüleri | Balanced Accuracy Curve | Altın eşik: **0.60** |
 | 7 | Sanal İkiz Testi (XAI) | 🧠 Ham OASIS Görüntüleri | Permütasyon Analizi | Genetik etkisi: **+45.3 puan** |
 | 8 | 5D Final Multimodal Model | 🧠 Ham OASIS Görüntüleri | SVM + Scaler + Pipeline | **%80 Final Accuracy** |
+| 9 | Klinik Karar Destek Sistemi | 🧠 Ham OASIS Görüntüleri | CDSS + Atrofi Isı Haritası | Hasta bazlı görsel rapor |
 
 ---
 
@@ -275,7 +276,12 @@ snp-genome-lab/
 │   ├── real_world_validation.png     # OASIS gerçek veri validasyonu
 │   ├── threshold_optimization.png    # Karar eşiği optimizasyon eğrisi
 │   ├── genetic_impact_simulation.png # Sanal İkiz Testi sonuçları
-│   └── final_confusion_matrix.png    # 5D final model karışıklık matrisi
+│   ├── final_confusion_matrix.png    # 5D final model karışıklık matrisi
+│   ├── model_attention_map.png       # Beyin atrofi ısı haritası (XAI)
+│   ├── Early_Diagnosis_Example.png   # Erken teşhis örnek çıktısı
+│   ├── full_report_patient_12.png    # CDSS v1 raporu (Hasta 12)
+│   ├── clinical_expert_report_8.png  # CDSS v2 uzman raporu (Hasta 8)
+│   └── clinical_expert_report_12.png # CDSS v2 uzman raporu (Hasta 12)
 ├── model_v2_genetic_final.pkl        # Eğitilmiş Final SVM Modeli
 ├── pca_module.pkl                    # PCA Dönüştürücü
 ├── model_config.txt                  # Model konfigürasyon raporu
@@ -326,6 +332,89 @@ print(f"Risk Skoru: %{prob*100:.1f} → Teşhis: {diagnosis}")
 
 ---
 
+## 🏥 Faz 9: Klinik Karar Destek Sistemi (CDSS)
+
+Projenin son fazında, eğitilmiş model bir **Klinik Karar Destek Sistemi (Clinical Decision Support System)** arayüzüne dönüştürülmüştür. Sistem, her hasta için otomatik olarak 4 bölümden oluşan görsel bir rapor ve doktor notu üretmektedir.
+
+### Rapor Bileşenleri
+
+| Bölüm | İçerik | Açıklama |
+|-------|--------|----------|
+| **Risk Metresi** | Renk kodlu bar grafik | Kırmızı: POZİTİF (>0.60), Yeşil: NEGATİF |
+| **Faktör Ağırlıkları** | Bar grafik | MRI, Yaş, Cinsiyet, nWBV, Genetik katkısı |
+| **Referans Tablosu** | Renklendirilmiş tablo | Hastanın değerleri klinik standartlarla karşılaştırılır |
+| **Atrofi Isı Haritası** | Nörogörüntüleme | Hasta-Sağlıklı fark haritası (hotspot analizi) |
+
+### Örnek Rapor Çıktısı
+
+```
+👨‍⚕️ KLİNİK KARAR DESTEK NOTU
+==================================================
+HASTA DURUMU: KRİTİK (Risk: %88.9)
+GENETİK KANIT: 2 risk alleli saptandı (APOE-e4 Standardı).
+FİZİKSEL BULGU: nWBV değeri 0.885. (Klinik Eşik: 0.72).
+YORUM: MRI verisindeki atrofi paterni ve genetik risk, Alzheimer ile %88.9 uyumludur.
+==================================================
+```
+
+### Referans Tablosundaki Renk Kodlaması
+
+Tablo hücreleri otomatik olarak renklendirilir; **kırmızı** riskli değerleri, **yeşil** normal sınırlardaki değerleri gösterir:
+
+| Parametre | Eşik | Renk |
+|-----------|------|------|
+| Genetik (APOE) | > 0 allel | 🔴 Kırmızı |
+| Beyin Hacmi (nWBV) | < 0.72 | 🔴 Kırmızı |
+| Teşhis Skoru | > 0.60 | 🔴 Kırmızı |
+
+### Beyin Atrofi Isı Haritası (XAI Katmanı)
+
+Sistemin en özgün özelliği, modelin "neden bu kararı verdiğini" görsel olarak açıklamasıdır. Sağlıklı ve hasta grupların ortalama beyin görüntüleri arasındaki fark hesaplanarak **voksel bazlı atrofi haritası** oluşturulmuştur.
+
+```python
+# Atrofi haritası hesaplama mantığı
+difference_map = avg_healthy_brain - avg_sick_brain
+# Pozitif değerler → Alzheimer hastalarında doku kaybı yaşanan bölgeler
+# Görselleştirme: plot_stat_map() ile MNI152 şablonu üzerine projekte edilir
+```
+
+> **Kırmızı/Sarı bölgeler** → Alzheimer hastalarında sağlıklı bireylere kıyasla en fazla doku kaybı yaşanan alanlardır. Model, teşhis kararını verirken bu bölgelerdeki piksel yoğunluklarına öncelikli olarak odaklanmaktadır.
+
+![Model Attention Map](reports/model_attention_map.png)
+
+### Üretilen Örnek Raporlar
+
+İki farklı versiyon rapor işlevi geliştirilmiştir. Aşağıda gerçek hasta çıktıları görülmektedir:
+
+**v1 — Temel Rapor (`full_report_patient_12.png`):**
+
+![Full Report Patient 12](reports/full_report_patient_12.png)
+
+**v2 — Uzman Klinik Rapor (`clinical_expert_report_12.png` ve `clinical_expert_report_8.png`):**
+
+![Clinical Expert Report 12](reports/clinical_expert_report_12.png)
+
+![Clinical Expert Report 8](reports/clinical_expert_report_8.png)
+
+**Erken Teşhis Örneği (`Early_Diagnosis_Example.png`):**
+
+![Early Diagnosis Example](reports/Early_Diagnosis_Example.png)
+
+### Klinik Kullanım
+
+```python
+import random
+
+# Kör test setinden rastgele bir hasta raporu oluştur
+generate_full_clinical_report_v3()
+
+# Belirli bir hastanın raporunu oluştur
+generate_full_clinical_report_v2(patient_idx=12)
+# → reports/clinical_expert_report_12.png olarak kaydedilir
+```
+
+---
+
 ## 📊 Sonuç ve Katkı
 
 Bu proje, Alzheimer hastalığının erken teşhisinde genetik, klinik ve nörogörüntüleme verilerini birleştiren bütünleşik bir yapay zeka yaklaşımı sunmaktadır.
@@ -335,6 +424,7 @@ Bu proje, Alzheimer hastalığının erken teşhisinde genetik, klinik ve nörog
 - Gerçek OASIS-1 MRI verisiyle %80 kör test doğruluğu
 - Threshold optimizasyonuyla %0 yanlış negatif hedefine yaklaşan klinik sistem
 - Sanal İkiz Testi ile genetiğin nedensel rolünün XAI yöntemiyle kanıtlanması
+- Voksel bazlı atrofi ısı haritası ve renkli referans tablosuyla donatılmış **Klinik Karar Destek Sistemi (CDSS)**
 
 ---
 
