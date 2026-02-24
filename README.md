@@ -27,16 +27,16 @@ Bu çalışma, genetik varyasyonların (Genotip) hastalıklar ve beyin yapısı 
 
 ## 📋 Proje Fazları
 
-| Faz | Konu | Araç | Sonuç |
-|-----|------|------|-------|
-| 1 | GWAS & SNP Analizi | Chi-Square, PRS | rs429358 (p < 10⁻²⁰) |
-| 2 | Imaging Genetics | Seaborn, MRI simülasyonu | Hipokampus atrofisi görselleştirildi |
-| 3 | Multimodal AI (Sentetik) | Random Forest | **%96.67 Accuracy** |
-| 4 | Gerçek Dünya Validasyonu | OASIS-1, Ensembl API | %93 Accuracy, %100 Recall |
-| 5 | OASIS Gerçek MRI + PCA + SVM | PCA (n=50) + SVM (RBF) | %80 Blind Test Accuracy |
-| 6 | Threshold Optimizasyonu | Balanced Accuracy Curve | Altın eşik: **0.60** |
-| 7 | Sanal İkiz Testi (XAI) | Permütasyon Analizi | Genetik etkisi: **+45.3 puan** |
-| 8 | 5D Final Multimodal Model | SVM + Scaler + Pipeline | **%80 Final Accuracy** |
+| Faz | Konu | Veri Türü | Araç | Sonuç |
+|-----|------|-----------|------|-------|
+| 1 | GWAS & SNP Analizi | 🧪 Sentetik | Chi-Square, PRS | rs429358 (p < 10⁻²⁰) |
+| 2 | Imaging Genetics | 🧪 Sentetik MRI | Seaborn, NumPy | Hipokampus atrofisi görselleştirildi |
+| 3 | Multimodal AI | 🧪 Sentetik | Random Forest | **%96.67 Accuracy** |
+| 4 | Gerçek Dünya Validasyonu | 📊 OASIS İstatistikleri | Ensembl API | %93 Accuracy, %100 Recall |
+| 5 | Gerçek MRI İşleme Boru Hattı | 🧠 Ham OASIS Görüntüleri | PCA + SVM (RBF) | %80 Blind Test Accuracy |
+| 6 | Threshold Optimizasyonu | 🧠 Ham OASIS Görüntüleri | Balanced Accuracy Curve | Altın eşik: **0.60** |
+| 7 | Sanal İkiz Testi (XAI) | 🧠 Ham OASIS Görüntüleri | Permütasyon Analizi | Genetik etkisi: **+45.3 puan** |
+| 8 | 5D Final Multimodal Model | 🧠 Ham OASIS Görüntüleri | SVM + Scaler + Pipeline | **%80 Final Accuracy** |
 
 ---
 
@@ -104,7 +104,9 @@ Genetik veriler MRI biyomarkerlarıyla birleştirilmiştir. Riskli APOE varyant�
 
 ---
 
-## 🌍 Faz 4: Gerçek Dünya Validasyonu (OASIS-1 + Ensembl)
+## 🌍 Faz 4: Gerçek Dünya Validasyonu (İstatistiksel OASIS Verileri ile Test)
+
+> ⚠️ **Önemli Not:** Bu fazda OASIS-1'in ham görüntü dosyaları **işlenmemiştir**. Bunun yerine, OASIS-1 makalesinden ve veri setinden elde edilen **istatistiksel referans değerleri** (ortalama nWBV, standart sapma) kullanılarak sentetik modelin gerçek dünya popülasyonuyla ne kadar örtüştüğü test edilmiştir. Ham görüntü işleme ilk kez Faz 5'te başlamaktadır.
 
 ### Veri Kaynakları
 
@@ -130,7 +132,9 @@ Alzheimer hastaları: nWBV ≈ 0.716 ± 0.03
 
 ---
 
-## 🧠 Faz 5: OASIS Gerçek MRI Verisiyle PCA + SVM Pipeline
+## 🧠 Faz 5: Gerçek MRI İşleme Boru Hattı (Ham Görüntü Bazlı PCA + SVM)
+
+> 🚀 **Büyük Lig Başlıyor:** Bu fazdan itibaren OASIS-1'in ham beyin görüntüleri (`.nii` formatında 3D voksel dosyaları) doğrudan indirilip işlenmiştir. Her görüntü **48×60×48 voksel**'e yeniden örneklenmiş (resampling), ardından PCA ile 138.240 boyutlu ham veri 50 anlamlı bileşene indirgenmiştir. Faz 4'teki istatistiksel yaklaşımdan tamamen farklı, gerçek görüntü tabanlı bir pipeline'dır.
 
 150 gerçek OASIS-1 beyin görüntüsü işlenmiş; **100 hasta eğitim**, **50 hasta kör test** olarak ayrılmıştır.
 
