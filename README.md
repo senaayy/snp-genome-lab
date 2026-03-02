@@ -28,6 +28,11 @@ Bu proje, **Tek Nükleotid Polimorfizmleri (SNP)** verilerini analiz etmek, **N�
 15. **Ön işleme görselleri:** Ham veri demo (`raw_data_demo.png`), işleme adımları (`processing_pipeline_steps.png`), N4 bias düzeltme sonucu (`n4_bias_correction_result.png`).
 16. **Model evrimi:** 70 bileşenli PCA → `final_pca_module_v2.pkl` ve `alzheimer_model_v3_70features.pkl`; NCBI/gerçek literatür verisi ile `model_v5_ncbi_real.pkl`; bilimsel multimodal pipeline `model_v6_multimodal_science.pkl`; sadece MRI modeli `mri_only_expert_model.pkl` (%80).
 
+<p align="center">
+  <img src="project_summary_dashboard_fixed.png" alt="Proje özet panosu" width="800"/>
+</p>
+<p align="center"><i>Proje özet panosu: veri akışı, fazlar ve model çıktıları</i></p>
+
 ---
 
 ## 🚀 Proje Vizyonu
@@ -202,6 +207,11 @@ Ham MRI (48×60×48 voxel)
   Threshold Kararı (0.60)
 ```
 
+<p align="center">
+  <img src="reports/processing_pipeline_steps.png" alt="MRI işleme pipeline adımları" width="700"/>
+</p>
+<p align="center"><i>Ham MRI'dan tahmine: işleme pipeline adımları</i></p>
+
 ### GridSearchCV Optimizasyon Sonuçları
 
 ```
@@ -244,7 +254,9 @@ Genetiğin teşhis üzerindeki nedensel etkisini kanıtlamak için, **tüm klini
 
 **Sonuç:** Beyin yapısı, yaş ve cinsiyet sabit tutulduğunda, genetik varyant tek başına **+45.3 puanlık** bir risk artışına yol açmıştır. Bu, modelin genetik bilgiyi anlamlı biçimde kullandığını doğrulamaktadır.
 
-![Genetic Impact Simulation](reports/genetic_impact_simulation.png)
+| Sanal İkiz (XAI) | Model dikkat haritası |
+|------------------|------------------------|
+| ![Genetic Impact Simulation](reports/genetic_impact_simulation.png) | ![Model Attention Map](reports/model_attention_map.png) |
 
 ---
 
@@ -296,7 +308,9 @@ Belirli bir hasta için **sadece MRI** ile **MRI + APOE genetik bilgisi** tahmin
 
 > **Sonuç:** Aynı beyin yapısında, APOE4 genetik varyantı tek başına tahmin edilen riski belirgin şekilde artırır; literatürdeki Odds Ratio (OR: 3.2) ile uyumludur.
 
-![Faz 9 Risk Analizi](faz9_final_report_10.png)
+| Final risk raporu (Faz 9) | APOE4 etki karşılaştırması |
+|---------------------------|----------------------------|
+| ![Faz 9 Final Report](faz9_final_report_10.png) | ![Risk Analysis Patient 10](risk_analysis_patient_10.png) |
 
 ---
 
@@ -415,6 +429,15 @@ Bu proje, Alzheimer hastalığının erken teşhisinde genetik, klinik ve nörog
 - Gerçek OASIS-1 MRI verisiyle %80 kör test doğruluğu
 - Threshold optimizasyonuyla %0 yanlış negatif hedefine yaklaşan klinik sistem
 - Sanal İkiz Testi ile genetiğin nedensel rolünün XAI yöntemiyle kanıtlanması
+
+<p align="center">
+  <img src="raporlar/Bilimsel_Dogrulama_Grafigi.png" alt="Bilimsel doğrulama" width="700"/>
+</p>
+<p align="center"><i>Bilimsel doğrulama: model çıktıları ve literatür uyumu</i></p>
+
+| Erken teşhis örneği | Faz 2 vs Faz 3 karşılaştırması |
+|---------------------|--------------------------------|
+| ![Early Diagnosis Example](reports/Early_Diagnosis_Example.png) | ![Phase 2 vs 3](comparison_phase2_vs_phase3.png) |
 
 ---
 
