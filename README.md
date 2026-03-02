@@ -9,6 +9,25 @@
 
 Bu proje, **Tek Nükleotid Polimorfizmleri (SNP)** verilerini analiz etmek, **Nörogörüntüleme (MRI)** biyomarkerlarıyla entegre etmek ve Alzheimer hastalığı riski tahmini için **5 Boyutlu Multimodal Yapay Zeka** modelleri geliştirmek amacıyla uçtan uca bir biyoinformatik boru hattı (pipeline) sunar.
 
+### Baştan Sona Yapılanlar (Özet)
+
+1. **Sentetik SNP verisi** üretildi; **GWAS (Chi-Square, Manhattan plot)** ile rs429358 (APOE) en anlamlı varyant olarak tespit edildi.
+2. **Imaging genetics:** Genotip–beyin hacmi (Hipokampus/nWBV) ilişkisi görselleştirildi.
+3. **Multimodal model (Genetik + MRI)** sentetik veride %96.67 doğrulukla eğitildi.
+4. **Ensembl API** ile gerçek alel frekansları; **OASIS istatistikleri** ile gerçekçi nWBV değerleri kullanıldı; **%93 accuracy, %100 recall** ile validasyon yapıldı.
+5. **Ham OASIS MRI** (.nii) indirilip işlendi; **PCA + SVM** pipeline’ı kuruldu; **%80 kör test** doğruluğu hedeflendi.
+6. **Threshold 0.60** ile dengeli başarı (balanced accuracy) optimize edildi.
+7. **Sanal İkiz Testi (XAI)** ile genetiğin tahmin üzerindeki etkisi (+45.3 puan) gösterildi.
+8. **5D final model** (MRI-PCA + Yaş + Cinsiyet + nWBV + APOE) eğitilip kaydedildi; **%80 accuracy** raporlandı.
+9. **Faz 9:** Hasta bazlı risk analizi (MRI-only vs MRI+genetik) ve APOE4 etki görselleştirmesi eklendi; çıktılar `faz9_final_report_10.png` ve `risk_analysis_patient_10.png` olarak üretildi.
+10. **OASIS-1 ham MRI pipeline:** `fetch_oasis_vbm` ile 100/150 denek indirildi; CDR ile etiketleme; NiftiMasker ile sayısallaştırma; `oasis_features_X.npy` / `oasis_labels_y.npy` kaydedildi.
+11. **ROI tabanlı analiz:** Harvard-Oxford atlası ve NiftiLabelsMasker ile bölge bazlı özellikler; Random Forest ile önem sırası (Superior Frontal Gyrus, Supramarginal, Paracingulate vb.); ROI + Yaş + Cinsiyet multimodal model.
+12. **3D CNN denemesi:** Görüntüler 48×60×48’e yeniden örneklenip Conv3D mimarisi ile eğitim; sınıf ağırlıklı kayıp.
+13. **Klinik raporlar:** Hasta bazlı tam rapor (`full_report_patient_X.png`), klinik uzman raporu (`clinical_expert_report_X.png`), model dikkat haritası (`model_attention_map.png`), erken teşhis örneği (`Early_Diagnosis_Example.png`).
+14. **Ham veri entegrasyonu:** `data/raw_images` ile yerel OASIS/FreeSurfer çıktıları; zip açma ve .nii/.mgz dosya denemeleri; işlenmiş görüntü pipeline’ı.
+15. **Ön işleme görselleri:** Ham veri demo (`raw_data_demo.png`), işleme adımları (`processing_pipeline_steps.png`), N4 bias düzeltme sonucu (`n4_bias_correction_result.png`).
+16. **Model evrimi:** 70 bileşenli PCA → `final_pca_module_v2.pkl` ve `alzheimer_model_v3_70features.pkl`; NCBI/gerçek literatür verisi ile `model_v5_ncbi_real.pkl`; bilimsel multimodal pipeline `model_v6_multimodal_science.pkl`; sadece MRI modeli `mri_only_expert_model.pkl` (%80).
+
 ---
 
 ## 🚀 Proje Vizyonu
@@ -22,6 +41,9 @@ Bu çalışma, genetik varyasyonların (Genotip) hastalıklar ve beyin yapısı 
 - **Imaging Genetics:** Genetik varyasyonların beyin hacmi (Hipokampus/nWBV) üzerindeki fiziksel etkisinin görselleştirilmesi.
 - **5D Multimodal AI:** MRI (PCA-50) + Yaş + Cinsiyet + nWBV + Genetik (APOE) verilerini birleştiren SVM modeli.
 - **Klinik Karar Optimizasyonu:** Threshold analizi ile hem hasta kaçırmayan hem de aşırı alarm vermeyen dengeli bir teşhis sistemi.
+- **ROI Tabanlı XAI:** Harvard-Oxford atlası ile bölge bazlı özellikler; Random Forest feature importance ile Alzheimer’da öne çıkan beyin bölgeleri (Superior Frontal Gyrus, Supramarginal, Paracingulate vb.).
+- **3D CNN Denemesi:** Ham MRI’ın 48×60×48 yeniden örneklenmesi ve Conv3D ile derin öğrenme denemesi.
+- **Tek Not Defteri:** Tüm pipeline `Untitled.ipynb` içinde baştan sona çalıştırılabilir; ara sonuçlar `.npy`/`.pkl` ve `reports/` ile saklanır.
 
 ---
 
@@ -37,6 +59,32 @@ Bu çalışma, genetik varyasyonların (Genotip) hastalıklar ve beyin yapısı 
 | 6 | Threshold Optimizasyonu | 🧠 Ham OASIS Görüntüleri | Balanced Accuracy Curve | Altın eşik: **0.60** |
 | 7 | Sanal İkiz Testi (XAI) | 🧠 Ham OASIS Görüntüleri | Permütasyon Analizi | Genetik etkisi: **+45.3 puan** |
 | 8 | 5D Final Multimodal Model | 🧠 Ham OASIS Görüntüleri | SVM + Scaler + Pipeline | **%80 Final Accuracy** |
+| 9 | Hasta Bazlı Risk Analizi | 🧠 MRI + Genetik | APOE4 Etki Görselleştirmesi | Risk artışı: **+45 puan** (Literatür OR: 3.2) |
+
+---
+
+## 📓 Notebook İçeriği: Untitled.ipynb (Baştan Sona Akış)
+
+Ana analizler tek bir Jupyter not defterinde (`Untitled.ipynb`) sırayla yer alır. Aşağıdaki sıra, not defterinde baştan sona yapılan gelişmeleri özetler.
+
+| Sıra | Blok / Konu | Kısa Açıklama |
+|------|-------------|----------------|
+| 1 | Sentetik SNP + GWAS | `sample_snp_data.csv` oluşturma; Chi-Square; Manhattan plot; PRS; gen etiketli Manhattan; raporlara kaydetme |
+| 2 | Imaging Genetics | Hipokampus hacmi ekleme; genotip–hacim grafiği; Violin plot; model karşılaştırma grafiği |
+| 3 | Multimodal (Gen + MRI) | Random Forest; %96.67 accuracy; `reports/model_comparison_plot.png` |
+| 4 | Gerçek Dünya Validasyonu | Ensembl API (rs429358 frekansı); Hardy–Weinberg; OASIS nWBV istatistikleri; %93 accuracy, %100 recall; `real_world_validation.png` |
+| 5 | OASIS-1 Ham Veri | `fetch_oasis_vbm(n_subjects=100/150)`; klinik tablo (CDR, yaş, cinsiyet); NiftiMasker; `oasis_features_X.npy`, `oasis_labels_y.npy` |
+| 6 | Voksel RF + PCA+SVM | Raw voxel RF (%70); PCA + SVM pipeline; `final_alzheimer_model.pkl`, `final_pca_module.pkl` |
+| 7 | Harvard-Oxford ROI | NiftiLabelsMasker; bölge bazlı RF (%65); feature_importances (Superior Frontal, Supramarginal, Paracingulate vb.); ROI + Yaş + Cinsiyet multimodal (%70); StandardScaler + SVM |
+| 8 | 3D CNN | Resample 48×60×48; Conv3D mimarisi; sınıf ağırlıklı eğitim; accuracy/loss ve karışıklık matrisi |
+| 9 | 5D Final + XAI | PCA + Yaş + Cinsiyet + nWBV + APOE; `model_v2_genetic_final.pkl`, `pca_module.pkl`; threshold 0.60; Sanal İkiz Testi (+45.3 puan); `threshold_optimization.png`, `genetic_impact_simulation.png`, `final_confusion_matrix.png` |
+| 10 | Raporlar ve Görselleştirme | Model dikkat haritası; hasta bazlı tam rapor (`full_report_patient_X`); klinik uzman raporu (`clinical_expert_report_X`); `Early_Diagnosis_Example.png` |
+| 11 | Ham Veri Klasörü | `data/raw_images`, `data/processed`, `models`; zip açma; OASIS/FreeSurfer .nii ve .mgz denemeleri |
+| 12 | PCA 70 + Model Serisi | 70 bileşenli PCA → `final_pca_module_v2.pkl`; `alzheimer_model_v3_70features.pkl`; NCBI/gerçek veri → `model_v5_ncbi_real.pkl`; multimodal pipeline → `model_v6_multimodal_science.pkl`; sadece MRI → `mri_only_expert_model.pkl` (%80) |
+| 13 | İşleme Pipeline Görselleri | `raw_data_demo.png`; `processing_pipeline_steps.png`; N4 bias düzeltme → `n4_bias_correction_result.png` |
+| 14 | Faz 9: Hasta Risk Analizi | MRI-only vs MRI+genetik olasılık; APOE4 etki çizimi; `risk_analysis_patient_10.png`, `faz9_final_report_10.png`; Bayesian risk stratifikasyonu |
+
+Tüm bu adımlar tek not defterinde arka arkaya çalıştırılabilir; ara çıktılar (`.npy`, `.pkl`, `reports/`) sonraki hücrelerde kullanılır.
 
 ---
 
@@ -238,6 +286,20 @@ accuracy                              0.80
 
 ---
 
+## 📊 Faz 9: Hasta Bazlı Risk Analizi (APOE4 Etkisi)
+
+Belirli bir hasta için **sadece MRI** ile **MRI + APOE genetik bilgisi** tahminlerinin karşılaştırıldığı hasta bazlı risk raporu üretilir. Model, gerçek beyin verisi üzerine literatürdeki **Bayesian Risk Stratification** yaklaşımıyla bilimsel risk katsayısı ekleyerek çalışır.
+
+- **Girdi:** Hasta ID (örn. 10), MRI PCA özellikleri, model pipeline
+- **Çıktı:** MRI-only vs Genetik-düzeltmeli olasılık; klinik eşik (%60) referans çizgisi
+- **Görsel:** `risk_analysis_patient_10.png`, `faz9_final_report_10.png`
+
+> **Sonuç:** Aynı beyin yapısında, APOE4 genetik varyantı tek başına tahmin edilen riski belirgin şekilde artırır; literatürdeki Odds Ratio (OR: 3.2) ile uyumludur.
+
+![Faz 9 Risk Analizi](faz9_final_report_10.png)
+
+---
+
 ## 🛠️ Teknik Yığın
 
 | Kategori | Araçlar |
@@ -250,6 +312,7 @@ accuracy                              0.80
 | **Makine Öğrenmesi** | Scikit-learn (SVM, Random Forest, PCA, GridSearchCV) |
 | **Derin Öğrenme** | TensorFlow/Keras (3D CNN denemeleri) |
 | **Model Yönetimi** | Joblib |
+| **MRI/Nörogörüntüleme** | Nilearn, NiBabel (notebook içi `pip` ile kurulur) |
 
 ---
 
@@ -258,27 +321,46 @@ accuracy                              0.80
 ```
 snp-genome-lab/
 ├── data/
-│   └── sample_snp_data.csv          # Sentetik SNP veri seti (150 kişi)
-├── notebooks/                        # Jupyter analiz dosyaları
-│   ├── 01_gwas_analysis.ipynb
-│   ├── 02_imaging_genetics.ipynb
-│   ├── 03_multimodal_ai.ipynb
-│   ├── 04_real_world_validation.ipynb
-│   └── 05_final_model.ipynb
+│   ├── sample_snp_data.csv           # Sentetik SNP veri seti (150 kişi)
+│   ├── BENIM_HESAPLAMAM.csv          # Hesaplama çıktıları
+│   ├── DETAYLI_HATA_RAPORU.csv       # Hata analizi
+│   ├── FREESURFER_HACIMLERI.csv      # Beyin hacim metrikleri
+│   ├── metadata/
+│   │   └── SANAL_KLINIK_VERI.csv     # OASIS ID, Yaş, Cinsiyet, CDR
+│   ├── processed/                    # Temizlenmiş OASIS MRI (.nii.gz)
+│   ├── processed_images/             # İşlenmiş görüntüler
+│   └── raw_images/                   # Ham OASIS/FreeSurfer (zip açılmış, .nii/.mgz); isteğe bağlı OASIS3_data_files / GENETIK_VERI
 ├── reports/                          # Grafik çıktıları (PNG, 300 DPI)
-│   ├── manhattan_plot.png            # GWAS temel sonuçları
-│   ├── annotated_manhattan.png       # Gen isimleriyle etiketlenmiş GWAS
-│   ├── snp_distribution.png          # rs429358 genotip dağılımı
-│   ├── prs_distribution.png          # Poligenik Risk Skoru dağılımı
-│   ├── imaging_genetics_plot.png     # Genotip vs Hipokampus hacmi
-│   ├── model_comparison_plot.png     # Temel vs Multimodal model karşılaştırması
-│   ├── real_world_validation.png     # OASIS gerçek veri validasyonu
-│   ├── threshold_optimization.png    # Karar eşiği optimizasyon eğrisi
-│   ├── genetic_impact_simulation.png # Sanal İkiz Testi sonuçları
-│   └── final_confusion_matrix.png    # 5D final model karışıklık matrisi
-├── model_v2_genetic_final.pkl        # Eğitilmiş Final SVM Modeli
-├── pca_module.pkl                    # PCA Dönüştürücü
-├── model_config.txt                  # Model konfigürasyon raporu
+│   ├── manhattan_plot.png
+│   ├── annotated_manhattan.png
+│   ├── snp_distribution.png
+│   ├── prs_distribution.png
+│   ├── imaging_genetics_plot.png
+│   ├── model_comparison_plot.png
+│   ├── real_world_validation.png
+│   ├── threshold_optimization.png
+│   ├── genetic_impact_simulation.png
+│   ├── final_confusion_matrix.png
+│   ├── model_attention_map.png       # Model dikkat haritası
+│   ├── full_report_patient_*.png     # Hasta bazlı tam rapor
+│   ├── clinical_expert_report_*.png  # Klinik uzman raporu
+│   ├── Early_Diagnosis_Example.png   # Erken teşhis örneği
+│   ├── raw_data_demo.png             # Ham veri demo
+│   ├── processing_pipeline_steps.png # İşleme adımları
+│   └── n4_bias_correction_result.png # N4 bias düzeltme sonucu
+├── Untitled.ipynb                    # Tüm fazları içeren ana analiz not defteri
+├── faz9_final_report_10.png          # Faz 9: Hasta 10 risk raporu
+├── risk_analysis_patient_10.png      # Faz 9: APOE4 etki görselleştirmesi
+├── comparison_phase2_vs_phase3.png    # Faz 2 vs 3 karşılaştırması
+├── oasis_features_X.npy              # OASIS MRI özellik matrisi
+├── oasis_labels_y.npy                # OASIS etiket vektörü
+├── model_v2_genetic_final.pkl        # 5D Final SVM (MRI+Yaş+Cinsiyet+nWBV+APOE)
+├── model_v6_multimodal_science.pkl   # Bilimsel multimodal pipeline
+├── model_v5_ncbi_real.pkl            # NCBI gerçek veri modeli
+├── mri_only_expert_model.pkl         # Sadece MRI modeli
+├── pca_module.pkl                    # PCA (model_v2 ile kullanılır)
+├── final_pca_module.pkl / _v2.pkl   # Final PCA modülleri
+├── model_config.txt                  # Model konfigürasyonu
 ├── model_threshold.txt               # Karar eşiği (0.60)
 ├── Dockerfile
 ├── docker-compose.yml
@@ -304,25 +386,23 @@ docker-compose up --build
 
 ### Eğitilmiş Modeli Kullanmak
 
+**5D Final Model (model_v2 + pca_module):**
 ```python
 import joblib
 import numpy as np
 
-# Modeli yükle
 model = joblib.load('model_v2_genetic_final.pkl')
 pca = joblib.load('pca_module.pkl')
 
-# Yeni hasta tahmini
-# mri_features: ham MRI vektörü (138240 boyutlu)
-# age: yaş (int), sex: cinsiyet (0/1), nwbv: beyin doluluk oranı (float), apoe: gen (0/1/2)
-
+# mri_features: ham MRI vektörü | age, sex, nwbv, apoe (0/1/2)
 mri_reduced = pca.transform([mri_features])
 patient = np.hstack((mri_reduced, [[age, sex, nwbv, apoe]]))
-
 prob = model.predict_proba(patient)[0][1]
 diagnosis = "HASTA" if prob > 0.60 else "SAĞLIKLI"
 print(f"Risk Skoru: %{prob*100:.1f} → Teşhis: {diagnosis}")
 ```
+
+**Bilimsel pipeline (Faz 9 / hasta risk raporu):** `model_v6_multimodal_science.pkl` ve `final_pca_module_v2.pkl` kullanılır. MRI-only ile MRI+genetik senaryoları karşılaştırılır.
 
 ---
 
