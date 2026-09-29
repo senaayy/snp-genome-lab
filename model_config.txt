@@ -3,6 +3,6 @@ MODEL KONFIGURASYONU
 --------------------
 Model Tipi: SVM (RBF Kernel)
 Veri Tipleri: MRI (PCA-50) + Yas + Cinsiyet + nWBV + Genetik (APOE)
-EÅŸik DeÄŸeri (Threshold): 0.6
-Test BaÅŸarÄ±sÄ±: %80
-Genetik Etki GÃ¼cÃ¼: %45 (Sanal Ä°kiz Testi)
+Eşik Değeri (Threshold): 0.6
+Test Başarısı: %80
+Genetik Etki Gücü: %45 (Sanal İkiz Testi)
